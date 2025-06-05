@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.Shared.ValueObjects;
 
 public class Description : ValueObject
 {
+    public const int MaxLength = 2000;
+
     private Description(string value)
     {
         Value = value;
@@ -19,8 +20,8 @@ public class Description : ValueObject
 
         var trimmed = value.Trim();
 
-        if (trimmed.Length > Constants.MaxHighTextLength)
-            throw new ArgumentException($"Description must not exceed {Constants.MaxHighTextLength} characters.",
+        if (trimmed.Length > MaxLength)
+            throw new ArgumentException($"Description must not exceed {MaxLength} characters.",
                 nameof(value));
 
         return new Description(trimmed);

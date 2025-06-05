@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
 public class FurColor : ValueObject
 {
+    public const int MaxLength = 100;
+
     private FurColor(string value)
     {
         Value = value;
@@ -19,8 +20,8 @@ public class FurColor : ValueObject
 
         var trimmed = value.Trim();
 
-        if (trimmed.Length > Constants.MaxLowTextLength)
-            throw new ArgumentException($"Fur color must not exceed {Constants.MaxLowTextLength} characters.",
+        if (trimmed.Length > MaxLength)
+            throw new ArgumentException($"Fur color must not exceed {MaxLength} characters.",
                 nameof(value));
 
         return new FurColor(trimmed);

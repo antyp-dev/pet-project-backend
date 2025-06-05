@@ -2,6 +2,10 @@
 
 public record RequisiteForSupportList
 {
+    private RequisiteForSupportList()
+    {
+    }
+
     private RequisiteForSupportList(IEnumerable<RequisiteForSupport> requisites)
     {
         Requisites = requisites.ToList();
