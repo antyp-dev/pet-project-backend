@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -21,15 +22,15 @@ public class HelpStatus : ValueObject
         new[] { NeedsHelp, LookingForHome, Adopted }
             .ToDictionary(x => x.Value.ToLowerInvariant());
 
-    public static HelpStatus FromString(string input)
+    public static Result<HelpStatus, Error> FromString(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentException("Help status cannot be empty.", nameof(input));
+            return Errors.General.ValueIsRequired("Help status");
 
         var normalized = input.Trim().ToLowerInvariant();
 
         if (!_all.TryGetValue(normalized, out var status))
-            throw new ArgumentException($"Unknown help status: '{input}'", nameof(input));
+            return Errors.General.UnknownValue("Help status", input);
 
         return status;
     }

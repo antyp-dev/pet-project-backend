@@ -13,15 +13,15 @@ public class BirthDate : ValueObject
 
     public DateOnly Value { get; }
 
-    public static BirthDate Create(DateOnly date)
+    public static Result<BirthDate, Error> Create(DateOnly date)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
         if (date > today)
-            throw new ArgumentOutOfRangeException(nameof(date), "Birth date cannot be in the future.");
+            return Errors.General.ValueIsInFuture("Birth date", today);
 
         if (date < MinDate)
-            throw new ArgumentOutOfRangeException(nameof(date), $"Birth date cannot be earlier than {MinDate}.");
+            return Errors.General.ValueIsTooOld("Birth date", MinDate);
 
         return new BirthDate(date);
     }

@@ -17,21 +17,22 @@ public class Email : ValueObject
 
     public string Value { get; }
 
-    public static Email Create(string input)
+    public static Result<Email, Error> Create(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentException("Email cannot be empty.", nameof(input));
+            return Errors.General.ValueIsRequired("Email");
 
         var trimmed = input.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new ArgumentException($"Email must not exceed {MaxLength} characters.", nameof(input));
+            return Errors.General.ValueTooLong("Email", MaxLength);
 
         if (!EmailRegex.IsMatch(trimmed))
-            throw new ArgumentException("Email is not in a valid format.", nameof(input));
+            return Errors.General.ValueIsInvalid("Email");
 
         return new Email(trimmed);
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

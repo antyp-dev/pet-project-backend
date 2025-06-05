@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -15,23 +16,23 @@ public class PetName : ValueObject
 
     public string Value { get; }
 
-    public static PetName Create(string name)
+    public static Result<PetName, Error> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Name cannot be empty or whitespace.", nameof(name));
+            return Errors.General.ValueIsRequired("Name");
 
         if (name.Length < MinLength)
-            throw new ArgumentException($"Name must be at least {MinLength} characters long.", nameof(name));
+            return Errors.General.ValueTooSmall("Name", MinLength);
 
         if (name.Length > MaxLength)
-            throw new ArgumentException($"Name must not exceed {MaxLength} characters.", nameof(name));
+            return Errors.General.ValueTooLarge("Name", MaxLength);
 
         if (!Regex.IsMatch(name, @"^[А-Яа-яЁёA-Za-z\s\-']+$"))
-            throw new ArgumentException("Name may contain only letters, spaces, hyphens, and apostrophes.",
-                nameof(name));
+            return Errors.General.ValueIsInvalid("Name");
 
         return new PetName(name.Trim());
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

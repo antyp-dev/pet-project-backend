@@ -22,16 +22,16 @@ public class Address : ValueObject
     public string HouseNumber { get; }
     public string? AdditionalInfo { get; }
 
-    public static Address Create(string city, string street, string houseNumber, string? additionalInfo = null)
+    public static Result<Address, Error> Create(string city, string street, string houseNumber, string? additionalInfo = null)
     {
         if (string.IsNullOrWhiteSpace(city))
-            throw new ArgumentException("City is required.", nameof(city));
+            return Errors.General.ValueIsRequired("City");
 
         if (string.IsNullOrWhiteSpace(street))
-            throw new ArgumentException("Street is required.", nameof(street));
+            return Errors.General.ValueIsRequired("Street");
 
         if (string.IsNullOrWhiteSpace(houseNumber))
-            throw new ArgumentException("House number is required.", nameof(houseNumber));
+            return Errors.General.ValueIsRequired("House number");
 
         city = city.Trim();
         street = street.Trim();
@@ -39,18 +39,16 @@ public class Address : ValueObject
         additionalInfo = additionalInfo?.Trim();
 
         if (city.Length > MaxCityLength)
-            throw new ArgumentException($"City must not exceed {MaxCityLength} characters.", nameof(city));
+            return Errors.General.ValueTooLong("City", MaxCityLength);
 
         if (street.Length > MaxStreetLength)
-            throw new ArgumentException($"Street must not exceed {MaxStreetLength} characters.", nameof(street));
+            return Errors.General.ValueTooLong("Street", MaxStreetLength);
 
         if (houseNumber.Length > MaxHouseLength)
-            throw new ArgumentException($"House number must not exceed {MaxHouseLength} characters.",
-                nameof(houseNumber));
+            return Errors.General.ValueTooLong("House number", MaxHouseLength);
 
         if (!string.IsNullOrEmpty(additionalInfo) && additionalInfo.Length > MaxAdditionalLength)
-            throw new ArgumentException($"Additional info must not exceed {MaxAdditionalLength} characters.",
-                nameof(additionalInfo));
+            return Errors.General.ValueTooLong("Additional info", MaxAdditionalLength);
 
         return new Address(city, street, houseNumber, additionalInfo);
     }
