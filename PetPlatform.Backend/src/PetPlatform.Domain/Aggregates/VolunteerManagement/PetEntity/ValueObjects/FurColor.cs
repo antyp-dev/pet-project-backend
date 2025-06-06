@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -13,16 +14,15 @@ public class FurColor : ValueObject
 
     public string Value { get; }
 
-    public static FurColor Create(string value)
+    public static Result<FurColor, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("Fur color cannot be empty.", nameof(value));
+            return Errors.General.ValueIsRequired("Fur color");
 
         var trimmed = value.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new ArgumentException($"Fur color must not exceed {MaxLength} characters.",
-                nameof(value));
+            return Errors.General.ValueTooLong("Fur color", MaxLength);
 
         return new FurColor(trimmed);
     }

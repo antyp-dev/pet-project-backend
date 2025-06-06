@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.Shared.ValueObjects;
 
@@ -13,19 +14,19 @@ public class Description : ValueObject
 
     public string Value { get; }
 
-    public static Description Create(string value)
+    public static Result<Description, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("Description cannot be empty or whitespace.", nameof(value));
+            return Errors.General.ValueIsRequired("Description");
 
         var trimmed = value.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new ArgumentException($"Description must not exceed {MaxLength} characters.",
-                nameof(value));
+            return Errors.General.ValueTooLong("Description", MaxLength);
 
         return new Description(trimmed);
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

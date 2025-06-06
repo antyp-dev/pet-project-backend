@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot.ValueObjects;
 
@@ -16,28 +17,29 @@ public class SocialNetwork : ValueObject
     public string Name { get; }
     public string Url { get; }
 
-    public static SocialNetwork Create(string name, string url)
+    public static Result<SocialNetwork, Error> Create(string name, string url)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Social network name cannot be empty.", nameof(name));
+            return Errors.General.ValueIsRequired("Name");
 
         if (string.IsNullOrWhiteSpace(url))
-            throw new ArgumentException("Social network URL cannot be empty.", nameof(url));
+            return Errors.General.ValueIsRequired("URL");
 
         var trimmedName = name.Trim();
         var trimmedUrl = url.Trim();
 
         if (trimmedName.Length > MaxNameLength)
-            throw new ArgumentException($"Name must not exceed {MaxNameLength} characters.", nameof(name));
+            return Errors.General.ValueTooLong("Name", MaxNameLength);
 
         if (trimmedUrl.Length > MaxUrlLength)
-            throw new ArgumentException($"URL must not exceed {MaxUrlLength} characters.", nameof(url));
+            return Errors.General.ValueTooLong("URL", MaxUrlLength);
 
         if (!Uri.IsWellFormedUriString(trimmedUrl, UriKind.Absolute))
-            throw new ArgumentException("URL is not valid.", nameof(url));
+            return Errors.General.ValueIsInvalid("URL");
 
         return new SocialNetwork(trimmedName, trimmedUrl);
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

@@ -15,19 +15,18 @@ public class PhoneNumber : ValueObject
 
     public string Value { get; }
 
-    public static PhoneNumber Create(string input)
+    public static Result<PhoneNumber, Error> Create(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentException("Phone number cannot be empty.", nameof(input));
+            return Errors.General.ValueIsRequired("Phone number");
 
         var trimmed = input.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new ArgumentException($"Phone number must not exceed {MaxLength} characters.", nameof(input));
+            return Errors.General.ValueTooLong("Phone number", MaxLength);
 
         if (!E164Regex.IsMatch(trimmed))
-            throw new ArgumentException("Phone number must be in valid E.164 format (e.g. +12024567041).",
-                nameof(input));
+            return Errors.General.ValueIsInvalid("Phone number");
 
         return new PhoneNumber(trimmed);
     }

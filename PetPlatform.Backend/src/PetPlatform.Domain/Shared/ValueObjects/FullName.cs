@@ -17,26 +17,26 @@ public class FullName : ValueObject
     public string FirstName { get; }
     public string? MiddleName { get; }
 
-    public static FullName Create(string lastName, string firstName, string? middleName = null)
+    public static Result<FullName, Error> Create(string lastName, string firstName, string? middleName = null)
     {
         if (string.IsNullOrWhiteSpace(lastName))
-            throw new ArgumentException("Last name cannot be empty.", nameof(lastName));
+            return Errors.General.ValueIsRequired("Last name");
 
         if (string.IsNullOrWhiteSpace(firstName))
-            throw new ArgumentException("First name cannot be empty.", nameof(firstName));
+            return Errors.General.ValueIsRequired("First name");
 
         var trimmedLastName = lastName.Trim();
         var trimmedFirstName = firstName.Trim();
         var trimmedMiddleName = middleName?.Trim();
 
         if (trimmedLastName.Length > MaxPartLength)
-            throw new ArgumentException($"Last name must not exceed {MaxPartLength} characters.", nameof(lastName));
+            return Errors.General.ValueTooLong("Last name", MaxPartLength);
 
         if (trimmedFirstName.Length > MaxPartLength)
-            throw new ArgumentException($"First name must not exceed {MaxPartLength} characters.", nameof(firstName));
+            return Errors.General.ValueTooLong("First name", MaxPartLength);
 
         if (!string.IsNullOrEmpty(trimmedMiddleName) && trimmedMiddleName.Length > MaxPartLength)
-            throw new ArgumentException($"Middle name must not exceed {MaxPartLength} characters.", nameof(middleName));
+            return Errors.General.ValueTooLong("Middle name", MaxPartLength);
 
         return new FullName(trimmedLastName, trimmedFirstName, trimmedMiddleName);
     }

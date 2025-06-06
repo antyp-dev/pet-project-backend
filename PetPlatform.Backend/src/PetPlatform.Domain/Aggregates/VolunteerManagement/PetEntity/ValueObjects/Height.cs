@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -14,16 +15,17 @@ public class Height : ValueObject
 
     public int Value { get; }
 
-    public static Height CreateFromCentimeters(int centimeters)
+    public static Result<Height, Error> CreateFromCentimeters(int centimeters)
     {
         if (centimeters < MinCm)
-            throw new ArgumentOutOfRangeException(nameof(centimeters), $"Pet height must be at least {MinCm} cm.");
+            return Errors.General.ValueTooSmall("Pet height", MinCm);
 
         if (centimeters > MaxCm)
-            throw new ArgumentOutOfRangeException(nameof(centimeters), $"Pet height must not exceed {MaxCm} cm.");
+            return Errors.General.ValueTooLarge("Pet height", MaxCm);
 
         return new Height(centimeters);
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

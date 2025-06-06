@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot.ValueObjects;
 
@@ -14,13 +15,13 @@ public class YearsOfExperience : ValueObject
 
     public int Value { get; }
 
-    public static YearsOfExperience Create(int years)
+    public static Result<YearsOfExperience, Error> Create(int years)
     {
         if (years < MinValue)
-            throw new ArgumentOutOfRangeException(nameof(years), $"Experience must be at least {MinValue} years.");
+            return Errors.General.ValueTooSmall("Experience", MinValue);
 
         if (years > MaxValue)
-            throw new ArgumentOutOfRangeException(nameof(years), $"Experience must not exceed {MaxValue} years.");
+            return Errors.General.ValueTooLarge("Experience", MaxValue);
 
         return new YearsOfExperience(years);
     }

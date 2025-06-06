@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.SpeciesManagement.AggregateRoot.ValueObjects;
 
@@ -15,18 +16,18 @@ public class SpeciesName : ValueObject
 
     public string Value { get; }
 
-    public static SpeciesName Create(string input)
+    public static Result<SpeciesName, Error> Create(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentException("Species name cannot be empty.", nameof(input));
+            return Errors.General.ValueIsRequired("Species name");
 
         var trimmed = input.Trim();
 
         if (trimmed.Length > MaxLength)
-            throw new ArgumentException($"Species name must not exceed {MaxLength} characters.", nameof(input));
+            return Errors.General.ValueTooLong("Species name", MaxLength);
 
         if (!AllowedPattern.IsMatch(trimmed))
-            throw new ArgumentException("Species name contains invalid characters.", nameof(input));
+            return Errors.General.ValueIsInvalid("Species name");
 
         return new SpeciesName(trimmed);
     }

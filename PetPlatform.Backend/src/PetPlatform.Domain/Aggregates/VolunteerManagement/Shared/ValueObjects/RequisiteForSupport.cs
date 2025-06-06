@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.Shared.ValueObjects;
 
@@ -16,26 +17,26 @@ public class RequisiteForSupport : ValueObject
     public string Title { get; }
     public string Description { get; }
 
-    public static RequisiteForSupport Create(string title, string description)
+    public static Result<RequisiteForSupport, Error> Create(string title, string description)
     {
         if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty.", nameof(title));
+            return Errors.General.ValueIsRequired("Title");
 
         if (string.IsNullOrWhiteSpace(description))
-            throw new ArgumentException("Description cannot be empty.", nameof(description));
+            return Errors.General.ValueIsRequired("Description");
 
         var trimmedTitle = title.Trim();
         var trimmedDescription = description.Trim();
 
         if (trimmedTitle.Length > MaxTitleLength)
-            throw new ArgumentException($"Title must not exceed {MaxTitleLength} characters.", nameof(title));
+            return Errors.General.ValueTooLong("Title", MaxTitleLength);
 
         if (trimmedDescription.Length > MaxDescriptionLength)
-            throw new ArgumentException($"Description must not exceed {MaxDescriptionLength} characters.",
-                nameof(description));
+            return Errors.General.ValueTooLong("Description", MaxDescriptionLength);
 
         return new RequisiteForSupport(trimmedTitle, trimmedDescription);
     }
+
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

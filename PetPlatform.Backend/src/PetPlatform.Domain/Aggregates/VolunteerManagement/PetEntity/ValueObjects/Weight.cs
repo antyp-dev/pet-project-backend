@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -14,13 +15,13 @@ public class Weight : ValueObject
 
     public decimal Value { get; }
 
-    public static Weight CreateFromKilograms(decimal kilograms)
+    public static Result<Weight, Error> CreateFromKilograms(decimal kilograms)
     {
         if (kilograms < MinKg)
-            throw new ArgumentOutOfRangeException(nameof(kilograms), $"Pet weight must be at least {MinKg} kg.");
+            return Errors.General.ValueTooSmall("Pet weight", (int)MinKg);
 
         if (kilograms > MaxKg)
-            throw new ArgumentOutOfRangeException(nameof(kilograms), $"Pet weight must not exceed {MaxKg} kg.");
+            return Errors.General.ValueTooLarge("Pet weight", (int)MaxKg);
 
         return new Weight(decimal.Round(kilograms, 2, MidpointRounding.AwayFromZero));
     }

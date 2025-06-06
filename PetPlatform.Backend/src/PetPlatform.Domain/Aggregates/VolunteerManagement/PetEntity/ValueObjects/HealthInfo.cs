@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetPlatform.Domain.Shared;
 
 namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 
@@ -19,23 +20,23 @@ public class HealthInfo : ValueObject
     public bool HasChronicDiseases { get; }
     public DateOnly? LastVetVisit { get; }
 
-    public static HealthInfo Create(
+    public static Result<HealthInfo, Error> Create(
         string summary,
         bool isVaccinated,
         bool hasChronicDiseases,
         DateOnly? lastVetVisit)
     {
         if (string.IsNullOrWhiteSpace(summary))
-            throw new ArgumentException("Health summary cannot be empty.", nameof(summary));
+            return Errors.General.ValueIsRequired("Health summary");
 
         var trimmed = summary.Trim();
 
         if (trimmed.Length > MaxSummaryLength)
-            throw new ArgumentException($"Health summary must not exceed {MaxSummaryLength} characters.",
-                nameof(summary));
+            return Errors.General.ValueTooLong("Health summary", MaxSummaryLength);
 
-        if (lastVetVisit is { } date && date > DateOnly.FromDateTime(DateTime.Today))
-            throw new ArgumentException("Last vet visit cannot be in the future.", nameof(lastVetVisit));
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        if (lastVetVisit is { } date && date > today)
+            return Errors.General.ValueIsInFuture("Last vet visit", today);
 
         return new HealthInfo(trimmed, isVaccinated, hasChronicDiseases, lastVetVisit);
     }
