@@ -4,6 +4,8 @@ namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjec
 
 public class HelpStatus : ValueObject
 {
+    public const int MaxLength = 20;
+
     private HelpStatus(string value)
     {
         Value = value;
