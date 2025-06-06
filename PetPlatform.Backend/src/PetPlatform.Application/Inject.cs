@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.CreateVolunteer;
 
 namespace PetPlatform.Application;
@@ -10,6 +11,8 @@ public static class Inject
         services.AddScoped<CreateVolunteerCommandHandler>();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
 
         return services;
     }

@@ -20,8 +20,8 @@ public class CreateVolunteerCommandHandler
 
     public async Task<Result<Guid, Error>> Handle(CreateVolunteerCommand request, CancellationToken cancellationToken)
     {
-        // лень писать обработку result, так как потом будет добавлен fluentvalidation
-        var fullName = FullName.Create(request.LastName, request.FirstName, request.MiddleName).Value;
+        var fullName = FullName.Create(
+            request.FullName.LastName, request.FullName.FirstName, request.FullName.MiddleName).Value;
         var email = Email.Create(request.Email).Value;
         var description = Description.Create(request.Description).Value;
         var yearsOfExperience = YearsOfExperience.Create(request.YearsOfExperience).Value;

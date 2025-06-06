@@ -4,9 +4,7 @@ namespace PetPlatform.Application.Features.VolunteerFeature.Commands.CreateVolun
 
 public record CreateVolunteerCommand
 {
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
+    public FullNameModel FullName { get; set; }
     public string Email { get; set; }
     public string Description { get; set; }
     public int YearsOfExperience { get; set; }

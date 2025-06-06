@@ -2,6 +2,7 @@
 using PetPlatform.API.Features.Volunteer.DTOs;
 using PetPlatform.Application.Common.Mappings;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.CreateVolunteer;
+using PetPlatform.Application.Features.VolunteerFeature.Models;
 
 namespace PetPlatform.API.Features.Volunteer.Requests;
 
@@ -19,6 +20,12 @@ public record CreateVolunteerRequest : IMapWith<CreateVolunteerCommand>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateVolunteerRequest, CreateVolunteerCommand>();
+        profile.CreateMap<CreateVolunteerRequest, CreateVolunteerCommand>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => new FullNameModel
+            {
+                LastName = src.LastName,
+                FirstName = src.FirstName,
+                MiddleName = src.MiddleName
+            }));
     }
 }
