@@ -87,13 +87,20 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
             rlb.OwnsMany(rl => rl.Requisites, rb =>
             {
-                rb.Property(r => r.Title).IsRequired().HasMaxLength(RequisiteForSupport.MaxTitleLength);
-                rb.Property(r => r.Description).IsRequired().HasMaxLength(RequisiteForSupport.MaxTitleLength);
+                rb.Property(r => r.Title)
+                    .IsRequired()
+                    .HasMaxLength(RequisiteForSupport.MaxTitleLength);
+
+                rb.Property(r => r.Description)
+                    .IsRequired()
+                    .HasMaxLength(RequisiteForSupport.MaxTitleLength);
             });
         });
 
         builder.HasMany(v => v.Pets)
             .WithOne()
             .HasForeignKey("volunteer_id");
+
+        builder.Navigation(v => v.Pets).AutoInclude(true);
     }
 }

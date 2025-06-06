@@ -16,17 +16,23 @@ public class Volunteer : Entity<VolunteerId>
     {
     }
 
-    public Volunteer(FullName fullName,
+    public Volunteer(
+        VolunteerId id,
+        FullName fullName,
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        PhoneNumber phoneNumber)
+        PhoneNumber phoneNumber,
+        SocialNetworkList? socialNetworks = null,
+        RequisiteForSupportList? requisitesForSupport = null) : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         YearsOfExperience = yearsOfExperience;
         PhoneNumber = phoneNumber;
+        SocialNetworks = socialNetworks;
+        RequisitesForSupport = requisitesForSupport;
     }
 
     public FullName FullName { get; private set; }

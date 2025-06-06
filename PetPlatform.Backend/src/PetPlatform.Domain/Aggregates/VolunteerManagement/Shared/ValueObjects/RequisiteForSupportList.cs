@@ -6,7 +6,7 @@ public record RequisiteForSupportList
     {
     }
 
-    private RequisiteForSupportList(IEnumerable<RequisiteForSupport> requisites)
+    public RequisiteForSupportList(IEnumerable<RequisiteForSupport> requisites)
     {
         Requisites = requisites.ToList();
     }
