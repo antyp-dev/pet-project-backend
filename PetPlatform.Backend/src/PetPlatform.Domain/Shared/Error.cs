@@ -23,6 +23,7 @@ public record Error
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
     public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
     public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
+    public static Error Internal(string code, string message) => new(code, message, ErrorType.Internal);
 
     public string Serialize()
     {
@@ -54,5 +55,6 @@ public enum ErrorType
     Validation,
     NotFound,
     Failure,
-    Conflict
+    Conflict,
+    Internal
 }
