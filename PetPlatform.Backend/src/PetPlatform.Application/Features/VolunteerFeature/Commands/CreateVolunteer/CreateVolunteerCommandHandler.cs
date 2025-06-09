@@ -47,6 +47,11 @@ public class CreateVolunteerCommandHandler
             .ToList();
         var requisiteList = new RequisiteForSupportList(requisites);
 
+        
+        var result = await _volunteerRepository.GetByEmail(email, cancellationToken);
+        if (result.IsSuccess)
+            return Errors.General.AlreadyExists("Volunteer", request.Email).ToErrorList();
+        
         var volunteerId = VolunteerId.NewId();
         var volunteer = new Volunteer(volunteerId, fullName, email, description, yearsOfExperience,
             phoneNumber, socialNetworkList, requisiteList);

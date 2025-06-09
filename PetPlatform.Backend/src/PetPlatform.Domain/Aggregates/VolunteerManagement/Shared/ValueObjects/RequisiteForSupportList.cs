@@ -6,10 +6,10 @@ public record RequisiteForSupportList
     {
     }
 
-    public RequisiteForSupportList(IEnumerable<RequisiteForSupport> requisites)
+    public RequisiteForSupportList(IEnumerable<RequisiteForSupport>? requisites)
     {
-        Requisites = requisites.ToList();
+        Requisites = requisites?.ToList();
     }
 
-    public IReadOnlyList<RequisiteForSupport> Requisites { get; } = [];
+    public IReadOnlyList<RequisiteForSupport>? Requisites { get; }
 }
