@@ -6,10 +6,10 @@ public record SocialNetworkList
     {
     }
 
-    public SocialNetworkList(IEnumerable<SocialNetwork> socialNetworks)
+    public SocialNetworkList(IEnumerable<SocialNetwork>? socialNetworks)
     {
-        SocialNetworks = socialNetworks.ToList();
+        SocialNetworks = socialNetworks?.ToList();
     }
 
-    public IReadOnlyList<SocialNetwork> SocialNetworks { get; } = [];
+    public IReadOnlyList<SocialNetwork>? SocialNetworks { get; }
 }

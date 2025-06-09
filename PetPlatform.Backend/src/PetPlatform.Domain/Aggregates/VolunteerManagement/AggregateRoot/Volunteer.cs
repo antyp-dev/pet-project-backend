@@ -23,8 +23,8 @@ public class Volunteer : Entity<VolunteerId>
         Description description,
         YearsOfExperience yearsOfExperience,
         PhoneNumber phoneNumber,
-        SocialNetworkList? socialNetworks = null,
-        RequisiteForSupportList? requisitesForSupport = null) : base(id)
+        SocialNetworkList socialNetworks,
+        RequisiteForSupportList requisitesForSupport) : base(id)
     {
         FullName = fullName;
         Email = email;
@@ -45,7 +45,7 @@ public class Volunteer : Entity<VolunteerId>
     public int CountPetsNeedHelp() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
 
     public PhoneNumber PhoneNumber { get; private set; }
-    public SocialNetworkList? SocialNetworks { get; private set; }
-    public RequisiteForSupportList? RequisitesForSupport { get; private set; }
+    public SocialNetworkList SocialNetworks { get; private set; }
+    public RequisiteForSupportList RequisitesForSupport { get; private set; }
     public IReadOnlyList<Pet> Pets => _pets;
 }

@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using PetPlatform.Application.Common.Validation;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot.ValueObjects;
@@ -14,13 +15,16 @@ public class CreateVolunteerCommandHandler
 {
     private readonly IVolunteerRepository _volunteerRepository;
     private readonly IValidator<CreateVolunteerCommand> _validator;
+    private readonly ILogger<CreateVolunteerCommandHandler> _logger;
 
     public CreateVolunteerCommandHandler(
         IVolunteerRepository volunteerRepository,
-        IValidator<CreateVolunteerCommand> validator)
+        IValidator<CreateVolunteerCommand> validator,
+        ILogger<CreateVolunteerCommandHandler> logger)
     {
         _volunteerRepository = volunteerRepository;
         _validator = validator;
+        _logger = logger;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(CreateVolunteerCommand request,
@@ -47,11 +51,18 @@ public class CreateVolunteerCommandHandler
             .ToList();
         var requisiteList = new RequisiteForSupportList(requisites);
 
+        
+        var result = await _volunteerRepository.GetByEmail(email, cancellationToken);
+        if (result.IsSuccess)
+            return Errors.General.AlreadyExists("Volunteer", request.Email).ToErrorList();
+        
         var volunteerId = VolunteerId.NewId();
         var volunteer = new Volunteer(volunteerId, fullName, email, description, yearsOfExperience,
             phoneNumber, socialNetworkList, requisiteList);
 
         await _volunteerRepository.Add(volunteer, cancellationToken);
+        
+        _logger.LogInformation("Created volunteer {@Volunteer}", volunteer);
 
         return (Guid)volunteer.Id;
     }
