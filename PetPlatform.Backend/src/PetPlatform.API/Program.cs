@@ -1,3 +1,4 @@
+using PetPlatform.API.Extensions;
 using PetPlatform.Application;
 using PetPlatform.Infrastructure;
 
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await app.ApplyMigration();
 }
 
 app.UseHttpsRedirection();
