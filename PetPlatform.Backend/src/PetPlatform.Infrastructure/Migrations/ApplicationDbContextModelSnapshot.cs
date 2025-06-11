@@ -82,6 +82,10 @@ namespace PetPlatform.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.ComplexProperty<Dictionary<string, object>>("Description", "PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot.Volunteer.Description#Description", b1 =>
                         {
                             b1.IsRequired();
@@ -174,6 +178,10 @@ namespace PetPlatform.Infrastructure.Migrations
                     b.Property<Guid>("SpeciesId")
                         .HasColumnType("uuid")
                         .HasColumnName("species_id");
+
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")

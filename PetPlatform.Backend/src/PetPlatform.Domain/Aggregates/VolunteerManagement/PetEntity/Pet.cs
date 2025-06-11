@@ -8,6 +8,7 @@ namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity;
 
 public class Pet : Entity<PetId>
 {
+    private bool _isDeleted;
     private Pet(PetId id) : base(id)
     {
     }
@@ -59,4 +60,14 @@ public class Pet : Entity<PetId>
     public HelpStatus HelpStatus { get; private set; }
     public RequisiteForSupportList? RequisitesForSupport { get; private set; }
     public DateTime CreatedAt { get; private set; }
+
+    public void SoftDelete()
+    {
+        _isDeleted = true;
+    }
+
+    public void Restore()
+    {
+        _isDeleted = false;
+    }
 }
