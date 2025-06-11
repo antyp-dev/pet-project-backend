@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.Create;
+using PetPlatform.Application.Features.VolunteerFeature.Commands.Delete;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateMainInfo;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateRequisitesForSupport;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateSocialNetworks;
@@ -15,6 +16,8 @@ public static class Inject
         services.AddScoped<UpdateSocialNetworksCommandHandler>();
         services.AddScoped<UpdateRequisitesForSupportCommandHandler>();
         services.AddScoped<UpdateMainInfoCommandHandler>();
+        services.AddScoped<HardDeleteVolunteerCommandHandler>();
+        services.AddScoped<SoftDeleteVolunteerCommandHandler>();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetPlatform.API.Features.Volunteer.Requests;
 using PetPlatform.API.Response;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.Create;
+using PetPlatform.Application.Features.VolunteerFeature.Commands.Delete;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateMainInfo;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateRequisitesForSupport;
 using PetPlatform.Application.Features.VolunteerFeature.Commands.UpdateSocialNetworks;
@@ -57,5 +58,21 @@ public class VolunteerController(IMapper mapper) : BaseController(mapper)
         var command = _mapper.Map<UpdateRequisitesForSupportCommand>(request);
         command.Id = id;
         return await handler.Handle(command, cancellationToken);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<EndpointResult<Guid>> Delete(
+        [FromRoute] Guid id,
+        [FromServices] SoftDeleteVolunteerCommandHandler softDeleteHandler,
+        [FromServices] HardDeleteVolunteerCommandHandler hardDeleteHandler,
+        CancellationToken cancellationToken,
+        [FromQuery] bool hard = false)
+    {
+        var command = new DeleteVolunteerCommand { Id = id };
+        
+        if (hard == true)
+            return await hardDeleteHandler.Handle(command, cancellationToken);
+        
+        return await softDeleteHandler.Handle(command, cancellationToken);
     }
 }
