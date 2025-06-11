@@ -57,5 +57,10 @@ public static class Errors
             var label = value is null ? "" : $" '{value}'";
             return Error.Conflict("value.already.exists", $"{name}{label} already exists");
         }
+
+        public static Error DuplicateValue(string name, string value)
+        {
+            return Error.Validation("value.duplicate", $"{name} '{value}' is duplicated");
+        }
     }
 }

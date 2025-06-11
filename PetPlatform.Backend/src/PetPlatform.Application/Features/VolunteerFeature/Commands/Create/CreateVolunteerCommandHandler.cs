@@ -9,7 +9,7 @@ using PetPlatform.Domain.Shared;
 using PetPlatform.Domain.Shared.EntityIds;
 using PetPlatform.Domain.Shared.ValueObjects;
 
-namespace PetPlatform.Application.Features.VolunteerFeature.Commands.CreateVolunteer;
+namespace PetPlatform.Application.Features.VolunteerFeature.Commands.Create;
 
 public class CreateVolunteerCommandHandler
 {

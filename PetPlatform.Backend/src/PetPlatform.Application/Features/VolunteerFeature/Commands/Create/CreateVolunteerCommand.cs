@@ -1,6 +1,6 @@
 ﻿using PetPlatform.Application.Features.VolunteerFeature.Models;
 
-namespace PetPlatform.Application.Features.VolunteerFeature.Commands.CreateVolunteer;
+namespace PetPlatform.Application.Features.VolunteerFeature.Commands.Create;
 
 public record CreateVolunteerCommand
 {
