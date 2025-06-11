@@ -3,6 +3,7 @@ using PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot.ValueObjec
 using PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.Shared.ValueObjects;
+using PetPlatform.Domain.Shared;
 using PetPlatform.Domain.Shared.EntityIds;
 using PetPlatform.Domain.Shared.ValueObjects;
 
@@ -48,4 +49,53 @@ public class Volunteer : Entity<VolunteerId>
     public SocialNetworkList SocialNetworks { get; private set; }
     public RequisiteForSupportList RequisitesForSupport { get; private set; }
     public IReadOnlyList<Pet> Pets => _pets;
+
+
+    public void UpdateMainInfo(
+        FullName fullName,
+        Description description,
+        YearsOfExperience yearsOfExperience,
+        PhoneNumber phoneNumber)
+    {
+        FullName = fullName;
+        Description = description;
+        YearsOfExperience = yearsOfExperience;
+        PhoneNumber = phoneNumber;
+    }
+
+    public Result<bool, Error> UpdateSocialNetworks(SocialNetworkList socialNetworks)
+    {
+        if (socialNetworks.SocialNetworks != null)
+        {
+            var duplicate = socialNetworks.SocialNetworks
+                .GroupBy(s => s.Name.Trim().ToLowerInvariant())
+                .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicate != null)
+            {
+                return Errors.General.DuplicateValue("SocialNetwork.Name", duplicate.Key);
+            }
+        }
+
+        SocialNetworks = socialNetworks;
+        return true;
+    }
+
+    public Result<bool, Error> UpdateRequisitesForSupport(RequisiteForSupportList requisitesForSupport)
+    {
+        if (requisitesForSupport.Requisites != null)
+        {
+            var duplicate = requisitesForSupport.Requisites
+                .GroupBy(r => r.Title.Trim().ToLowerInvariant())
+                .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicate != null)
+            {
+                return Errors.General.DuplicateValue("RequisiteForSupport.Title", duplicate.Key);
+            }
+        }
+
+        RequisitesForSupport = requisitesForSupport;
+        return true;
+    }
 }
