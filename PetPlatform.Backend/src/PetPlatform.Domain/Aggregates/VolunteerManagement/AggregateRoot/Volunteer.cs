@@ -11,6 +11,8 @@ namespace PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot;
 
 public class Volunteer : Entity<VolunteerId>
 {
+    private bool _isDeleted = false;
+    
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id) : base(id)
@@ -97,5 +99,17 @@ public class Volunteer : Entity<VolunteerId>
 
         RequisitesForSupport = requisitesForSupport;
         return true;
+    }
+
+    public void SoftDelete()
+    {
+        _isDeleted = true;
+        _pets.ForEach(p => p.SoftDelete());
+    }
+
+    public void Restore()
+    {
+        _isDeleted = false;
+        _pets.ForEach(p => p.Restore());
     }
 }

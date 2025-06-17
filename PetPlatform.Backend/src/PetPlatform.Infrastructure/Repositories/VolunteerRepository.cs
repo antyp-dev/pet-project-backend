@@ -33,7 +33,7 @@ public class VolunteerRepository : IVolunteerRepository
 
         if (volunteer == null)
             return Errors.General.NotFound(id);
-        
+
         return volunteer;
     }
 
@@ -53,7 +53,16 @@ public class VolunteerRepository : IVolunteerRepository
     {
         _dbContext.Volunteers.Attach(volunteer);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
+
+        return volunteer.Id;
+    }
+
+    public async Task<Guid> Delete(Volunteer volunteer, CancellationToken cancellationToken)
+    {
+        _dbContext.Volunteers.Remove(volunteer);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
         return volunteer.Id;
     }
 }

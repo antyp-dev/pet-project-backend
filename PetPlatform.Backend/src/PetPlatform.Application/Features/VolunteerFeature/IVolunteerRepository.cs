@@ -12,4 +12,5 @@ public interface IVolunteerRepository
     Task<Result<Volunteer, Error>> GetById(VolunteerId id, CancellationToken cancellationToken);
     Task<Result<Volunteer, Error>> GetByEmail(Email email, CancellationToken cancellationToken);
     Task<Guid> Save(Volunteer volunteer, CancellationToken cancellationToken);
+    Task<Guid> Delete(Volunteer volunteer, CancellationToken cancellationToken);
 }
