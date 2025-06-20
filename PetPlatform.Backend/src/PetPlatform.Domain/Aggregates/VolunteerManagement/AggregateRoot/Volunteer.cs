@@ -12,7 +12,7 @@ namespace PetPlatform.Domain.Aggregates.VolunteerManagement.AggregateRoot;
 public class Volunteer : Entity<VolunteerId>
 {
     private bool _isDeleted = false;
-    
+
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id) : base(id)
@@ -111,5 +111,83 @@ public class Volunteer : Entity<VolunteerId>
     {
         _isDeleted = false;
         _pets.ForEach(p => p.Restore());
+    }
+
+    public UnitResult<Error> AddPet(Pet pet)
+    {
+        var position = Position.Create(_pets.Count + 1);
+        if (position.IsFailure)
+            return position.Error;
+
+        pet.SetPosition(position.Value);
+
+        _pets.Add(pet);
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> MovePet(Pet pet, Position newPosition)
+    {
+        var currentPosition = pet.Position;
+
+        if (currentPosition == newPosition || _pets.Count == 1)
+            return Result.Success<Error>();
+
+        var adjustedPosition = AdjustNewPositionIfOutOfRange(newPosition);
+        if (adjustedPosition.IsFailure)
+            return adjustedPosition.Error;
+
+        newPosition = adjustedPosition.Value;
+
+        var moveResult = MoveIssuesBetweenPositions(newPosition, currentPosition);
+        if (moveResult.IsFailure)
+            return moveResult.Error;
+
+        pet.Move(newPosition);
+
+        newPosition = adjustedPosition.Value;
+
+        return Result.Success<Error>();
+    }
+
+    private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
+    {
+        if (newPosition.Value <= _pets.Count)
+            return newPosition;
+
+        var lastPosition = Position.Create(_pets.Count - 1);
+        if (lastPosition.IsFailure)
+            return lastPosition.Error;
+
+        return lastPosition.Value;
+    }
+
+    private UnitResult<Error> MoveIssuesBetweenPositions(Position newPosition, Position currentPosition)
+    {
+        if (newPosition < currentPosition)
+        {
+            var issuesToMove = _pets.Where(i => i.Position >= newPosition
+                                                && i.Position < currentPosition);
+
+            foreach (var issueToMove in issuesToMove)
+            {
+                var result = issueToMove.MoveForward();
+                if (result.IsFailure)
+                    return result.Error;
+            }
+        }
+        else if (newPosition > currentPosition)
+        {
+            var issuesToMove = _pets.Where(i => i.Position > currentPosition
+                                                && i.Position <= newPosition);
+
+            foreach (var issueToMove in issuesToMove)
+            {
+                var result = issueToMove.MoveBack();
+                if (result.IsFailure)
+                    return result.Error;
+            }
+        }
+
+        return Result.Success<Error>();
     }
 }

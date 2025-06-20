@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity.ValueObjects;
 using PetPlatform.Domain.Aggregates.VolunteerManagement.Shared.ValueObjects;
+using PetPlatform.Domain.Shared;
 using PetPlatform.Domain.Shared.EntityIds;
 using PetPlatform.Domain.Shared.ValueObjects;
 
@@ -9,6 +10,7 @@ namespace PetPlatform.Domain.Aggregates.VolunteerManagement.PetEntity;
 public class Pet : Entity<PetId>
 {
     private bool _isDeleted;
+
     private Pet(PetId id) : base(id)
     {
     }
@@ -46,6 +48,7 @@ public class Pet : Entity<PetId>
     }
 
     public PetName PetName { get; private set; }
+    public Position Position { get; private set; }
     public SpeciesId SpeciesId { get; private set; }
     public Description Description { get; private set; }
     public BreedId BreedId { get; private set; }
@@ -61,6 +64,8 @@ public class Pet : Entity<PetId>
     public RequisiteForSupportList? RequisitesForSupport { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
+    public void SetPosition(Position position) => Position = position;
+
     public void SoftDelete()
     {
         _isDeleted = true;
@@ -70,4 +75,29 @@ public class Pet : Entity<PetId>
     {
         _isDeleted = false;
     }
+
+    public UnitResult<Error> MoveForward()
+    {
+        var newPosition = Position.Forward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> MoveBack()
+    {
+        var newPosition = Position.Back();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
+    }
+
+    public void Move(Position newPosition) =>
+        Position = newPosition;
 }
